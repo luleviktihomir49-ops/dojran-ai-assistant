@@ -70,8 +70,8 @@ app.post('/incoming-call', (req, res) => {
   const callSid = req.body.CallSid;
   
   twiml.say({
-    voice: 'Polly.Maja',
-    language: 'sr-RS'
+   voice: 'Polly.Joanna',
+language: 'en-US'
   }, 'Zdravo! Dobrodosli vo Vila Dan Dar na Dojransko Ezero. Kako mozam da vi pomognam?');
   
   const gather = twiml.gather({
@@ -108,7 +108,8 @@ app.post('/process-speech', async (req, res) => {
   try {
     const aiResponse = await getAIResponse(callSid, speechResult);
     
-    twiml.say({ voice: 'Polly.Maja', language: 'sr-RS' }, aiResponse);
+    twiml.say({ voice: 'Polly.Joanna',
+language: 'en-US' }, aiResponse);
     
     const gather = twiml.gather({
       input: 'speech',
@@ -118,14 +119,17 @@ app.post('/process-speech', async (req, res) => {
       timeout: 5
     });
     
-    gather.say({ voice: 'Polly.Maja', language: 'sr-RS' }, 'Imate li ushte prasanja?');
+    gather.say({ voice: 'Polly.Joanna',
+language: 'en-US' }, 'Imate li ushte prasanja?');
     
-    twiml.say({ voice: 'Polly.Maja', language: 'sr-RS' }, 'Blagodarime sto ne kontaktiravte. Dobrodojdete vo Vila Dan Dar!');
+    twiml.say({ voice: 'Polly.Joanna',
+language: 'en-US' }, 'Blagodarime sto ne kontaktiravte. Dobrodojdete vo Vila Dan Dar!');
     twiml.hangup();
     
   } catch (error) {
     console.error('Error:', error);
-    twiml.say({ voice: 'Polly.Maja', language: 'sr-RS' }, 'Izvinete, imam tehnicki problem. Obidete se podocna.');
+    twiml.say({ voice: 'Polly.Joanna',
+language: 'en-US' }, 'Izvinete, imam tehnicki problem. Obidete se podocna.');
     twiml.hangup();
   }
   
