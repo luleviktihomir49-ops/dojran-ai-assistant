@@ -10,20 +10,19 @@ app.use(express.json());
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-const SYSTEM_PROMPT = `Ti si AI asistent za Vila Dan Dar apartmani na Dojransko Ezero vo Makedonija. Odgovaras kratko i jasno, maksimum 2-3 recenici. Zboruvas na makedonski ili srpski jazik zavisno od gostinot.
+const SYSTEM_PROMPT = `You are a friendly AI assistant for Vila Dan Dar apartments at Lake Dojran in Macedonia. Answer briefly and clearly, maximum 2-3 sentences. Always speak in English.
 
-INFORMACII:
-- 53 sobi: dvokreventi, trokreventi, cetvorokreventi, petokreventi, sestokreveten
-- Ceni: od 30-60 EUR za sezona (juni-septemvri), popust van sezona
-- Oprema: klima, TV, WiFi, kujna, banja
-- Bazen, parking, restoran na makedonska kujna
-- Otvoreno 365 dena
-- Lokacija: Nov Dojran, GPS 41.2247950, 22.6995809
+INFORMATION:
+- 53 rooms: double, triple, quadruple, quintuple, sextuple
+- Prices: from 30-60 EUR per night in season (June-September), discount off-season
+- Amenities: air conditioning, TV, WiFi, kitchen, bathroom
+- Pool, parking, Macedonian cuisine restaurant
+- Open 365 days a year
+- Location: Nov Dojran, GPS 41.2247950, 22.6995809
 - Check-in: 14:00, Check-out: 11:00
-- Kontakt za rezervacija: apartmanidojran.com
+- Contact for reservations: apartmanidojran.com
 
-Za rezervacija i tocni ceni, upatuvaj gostite da kontaktiraat direktno.`;
-
+For reservations and exact prices, direct guests to contact directly via apartmanidojran.com`;
 const conversations = {};
 
 async function getAIResponse(callSid, userText) {
@@ -82,7 +81,7 @@ app.post('/incoming-call', (req, res) => {
   const gather = twiml.gather({
     input: 'speech',
     action: `/process-speech?callSid=${callSid}`,
-    language: 'sr-RS',
+    language: 'en-US'
     speechTimeout: 'auto',
     timeout: 5
   });
@@ -98,7 +97,7 @@ app.post('/incoming-call', (req, res) => {
     timeout: 5
   });
   
-  gather.say({ voice: 'Polly.Maja', language: 'sr-RS' }, 'Prasajte me za ceni, smeshtaj ili rezervacii.');
+  gather.say({ voice: 'Polly.Maja', language: 'en-US' }, 'Prasajte me za ceni, smeshtaj ili rezervacii.');
   
   res.type('text/xml');
   res.send(twiml.toString());
@@ -110,11 +109,11 @@ app.post('/process-speech', async (req, res) => {
   const speechResult = req.body.SpeechResult;
   
   if (!speechResult) {
-    twiml.say({ voice: 'Polly.Maja', language: 'sr-RS' }, 'Izvinete, ne ve razbrav. Obidete se povtorno.');
+    twiml.say({ voice: 'Polly.Maja',language: 'en-US' }, 'Izvinete, ne ve razbrav. Obidete se povtorno.');
     twiml.gather({
       input: 'speech',
       action: `/process-speech?callSid=${callSid}`,
-      language: 'sr-RS',
+      language: 'en-US',
       speechTimeout: 'auto'
     });
     res.type('text/xml');
@@ -130,7 +129,7 @@ language: 'en-US' }, aiResponse);
     const gather = twiml.gather({
       input: 'speech',
       action: `/process-speech?callSid=${callSid}`,
-      language: 'sr-RS',
+      language: 'en-US',
       speechTimeout: 'auto',
       timeout: 5
     });
