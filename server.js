@@ -69,11 +69,27 @@ app.post('/incoming-call', (req, res) => {
   const twiml = new twilio.twiml.VoiceResponse();
   const callSid = req.body.CallSid;
   
-  twiml.say({
-   voice: 'Polly.Joanna',
-language: 'en-US'
-  }, 'Zdravo! Dobrodosli vo Vila Dan Dar na Dojransko Ezero. Kako mozam da vi pomognam?');
+  app.post('/incoming-call', async (req, res) => {
+  const twiml = new twilio.twiml.VoiceResponse();
+  const callSid = req.body.CallSid;
   
+  const welcomeText = 'Zdravo! Dobrodosli vo Vila Dan Dar na Dojransko Ezero. Kako mozam da vi pomognam?';
+  const audioBase64 = await textToSpeech(welcomeText);
+  
+  const audioUrl = `data:audio/mpeg;base64,${audioBase64}`;
+  twiml.play(audioUrl);
+  
+  const gather = twiml.gather({
+    input: 'speech',
+    action: `/process-speech?callSid=${callSid}`,
+    language: 'sr-RS',
+    speechTimeout: 'auto',
+    timeout: 5
+  });
+  
+  res.type('text/xml');
+  res.send(twiml.toString());
+});
   const gather = twiml.gather({
     input: 'speech',
     action: `/process-speech?callSid=${callSid}`,
