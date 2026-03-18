@@ -1,4 +1,4 @@
-   require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const twilio = require('twilio');
 const Anthropic = require('@anthropic-ai/sdk');
@@ -13,14 +13,40 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const SYSTEM_PROMPT = `You are a friendly AI assistant for Vila Dan Dar apartments at Lake Dojran in Macedonia. Answer briefly and clearly, maximum 2-3 sentences. Always speak in English.
 
 INFORMATION:
-- 53 rooms: double, triple, quadruple, quintuple, sextuple
-- Prices: from 30-60 EUR per night in season (June-September), discount off-season
-- Amenities: air conditioning, TV, WiFi, kitchen, bathroom
-- Pool, parking, Macedonian cuisine restaurant
+- Location: Nov Dojran, Macedonia, directly at Lake Dojran
 - Open 365 days a year
-- Location: Nov Dojran, GPS 41.2247950, 22.6995809
-- Check-in: 14:00, Check-out: 11:00
-- For reservations: apartmanidojran.com`;
+- GPS: 41.2247950, 22.6995809
+
+ROOM TYPES AND PRICES (valid all year, prices in EUR per night):
+- Double room: 30 EUR
+- Triple room: 40 EUR
+- Quadruple room: 50 EUR
+- Quintuple room: 60 EUR
+- Sextuple room (entire floor): 70 EUR
+- Total: 53 rooms available
+
+AMENITIES (all rooms include):
+- Air conditioning, TV, WiFi
+- Kitchen, bathroom
+- Pool, parking with security cameras
+- Macedonian cuisine restaurant on site
+- Less than 1000m from private beach
+- Doctor available during the day
+
+BOOKING CHANNELS:
+- Booking.com
+- Direct by phone
+- WhatsApp
+- Email
+- Website: apartmanidojran.com
+
+HOUSE RULES:
+- Check-in: 14:00
+- Check-out: 11:00
+- No smoking inside
+- No noise after 23:00
+
+Always be warm and welcoming. For exact availability and reservations, direct guests to apartmanidojran.com or suggest they contact directly.`;
 
 const conversations = {};
 
@@ -67,7 +93,6 @@ app.post('/incoming-call', async (req, res) => {
     const welcomeText = 'Hello! Welcome to Vila Dan Dar apartments at Lake Dojran. How can I help you today?';
     const audioBuffer = await textToSpeech(welcomeText);
     const audioBase64 = audioBuffer.toString('base64');
-
     twiml.play({ digits: '' }, `data:audio/mpeg;base64,${audioBase64}`);
   } catch (err) {
     twiml.say({ voice: 'Polly.Joanna' }, 'Hello! Welcome to Vila Dan Dar apartments at Lake Dojran. How can I help you today?');
